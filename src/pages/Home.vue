@@ -28,7 +28,7 @@
             <span>手机号码管理</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/addtype">手机号码查看</el-menu-item>
+            <el-menu-item index="/phonenumber">手机号码查看</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
          <el-submenu index="2">
@@ -37,7 +37,7 @@
             <span slot="title">选卡管理</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/addgrouping">选卡列表</el-menu-item>
+            <el-menu-item index="/selectedcard">选卡列表</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
          <el-submenu index="4">
@@ -46,16 +46,7 @@
             <span slot="title">异常查询</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="/addinformation">添加信息</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
-        <el-submenu index="5">
-          <template slot="title">
-            <i class="el-icon-location"></i>
-            <span slot="title">定时发送</span>
-          </template>
-          <el-menu-item-group>
-            <el-menu-item index="/addinformation">添加信息</el-menu-item>
+            <el-menu-item index="/abnormal">添加信息</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
         <el-submenu index="6">
@@ -65,6 +56,15 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="/Addwatch">添加买手表</el-menu-item>
+          </el-menu-item-group>
+        </el-submenu>
+         <el-submenu index="5">
+          <template slot="title">
+            <i class="el-icon-location"></i>
+            <span slot="title">入网协议</span>
+          </template>
+          <el-menu-item-group>
+            <el-menu-item index="/Servicecontract">查看列表</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
@@ -81,7 +81,12 @@ export default {
   name: "Home",
   data() {
     return {
-      isCollapse: false
+      isCollapse: false,
+       form: {
+        user_name: "",
+        user_card: "",
+        phone_number: ""
+      },
     };
   },
   components: {

@@ -1,217 +1,166 @@
 <template>
-  <div class="fillmap">
-    <div class="fillmap_f">
-      <el-form ref="form" :model="form" label-width="100px">
-        <el-form-item label="建筑名称">
-          <el-input type="text" v-model="form.name"></el-input>
+  <div class="lookmap">
+    <div class="addgrouping_add">
+      <el-button type="primary" @click="newgrouping">新增</el-button>
+    </div>
+    <div class="lookmap_list">
+      <el-table :data="tableData" style="width:60%">
+        <el-table-column type="index"></el-table-column>
+        <el-table-column prop="user_name" label="联系人"></el-table-column>
+        <el-table-column prop="phone_number" label="联系电话"></el-table-column>
+        <el-table-column prop="user_card" label="身份证号码"></el-table-column>
+      </el-table>
+    </div>
+    <div class="lookmap_paging">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[5,10,15,20]"
+        :page-size="5"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
+    </div>
+    <el-dialog title="添加手表" :visible.sync="dialogFormVisible">
+      <el-form :model="form" :rules="rules">
+        <el-form-item label="用户名称" :label-width="formLabelWidth">
+          <el-input v-model="form.user_name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="建筑头像">
-            <div class="adatar">
-          <img :src="form.avatar?form.avatar:require('../assets/img/ur.png')" alt="" >
-          <input type="file" name="" accept="image/gif,image/jpeg,image/jpg,image/png" @change="fileChange">
-          </div>
+        <el-form-item label="用户身份证号" :label-width="formLabelWidth">
+          <el-input v-model="form.user_card" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="建筑类型">
-          <el-select v-model="form.type" placeholder="请选择建筑类型">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.name"
-              :value="item.name"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="中心点坐标">
-          <!-- <span>{{userlocation.lng}},{{userlocation.lat}}</span> -->
-          <el-input placeholder="请输入内容" type="text" v-model="form.center_coordinate" disabled="disabled"></el-input>
-          <el-button type="primary" @click="outerVisible=true">地图选择</el-button>
-        </el-form-item>
-        <el-form-item label="详细地址">
-          <el-input type="text" v-model="form.address"></el-input>
-        </el-form-item>
-        <el-form-item label="四个坐标点">
-          <el-input placeholder="请输入内容" v-model="form.outline_coordinate" disabled="disabled"></el-input>
-          <el-button type="primary" @click="dialogVisible=true">地图选择</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          <el-button>取消</el-button>
+        <el-form-item label="用户联系方式" :label-width="formLabelWidth" prop="phone_number">
+          <el-input v-model="form.phone_number" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
-    </div>
-    <el-dialog title="展示中心点坐标地图" :visible.sync="outerVisible" :modal-append-to-body='false'>
-      <div v-if="outerVisible">
-        <b-map-component></b-map-component>
-        <div><el-button type="primary" @click="bmapbutton">确定</el-button></div>
-      </div>
-      <!-- <div><P>经纬度:{{userlocation.lng}},{{userlocation.lat}}地址:{{address}} <el-button type="primary" @click="bmapbutton">确定</el-button></P></div> -->
-    </el-dialog>
-    <el-dialog title="展示四个坐标点地图" :visible.sync="dialogVisible" :modal-append-to-body='false'>
-      <div v-if="dialogVisible">
-        <Bmaplongitude></Bmaplongitude>
-        <div><el-button type="primary" @click="fourlongitudebutton">确定</el-button></div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="Watchsubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
-
 <script>
-// import BMap from "BMap";
-// import BMapSymbolSHAPEPOINT from "BMap_Symbol_SHAPE_POINT";
- import BMapComponent from './BMapComponent';
- import Bmaplongitude from './Bmaplongitude'
+import { isvalidPhone } from "../assets/js/validate";
+var validPhone = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error("请输入电话号码"));
+  } else if (!isvalidPhone(value)) {
+    callback(new Error("请输入正确的11位手机号码"));
+  } else {
+    callback();
+  }
+};
 export default {
   data() {
     return {
-      fileList: [],
-      outerVisible:false,
-      dialogVisible:false,
-      longitude:{},
-      userlocation:{},
-      showMapComponent:true,
-      options:[],
+      tableData: [],
       form: {
-        name: "",
-        type: "",
-        address:"",
-        avatar:'',
-        center_coordinate:"",
-        outline_coordinate:"",
+        user_name:"",
+        user_card:"",
+        phone_number:""
+      },
+      dialogVisible: false,
+      formLabelWidth: "120px",
+      tableData: [],
+      currentPage: 1,
+      pageSize: 5,
+      total: 0,
+      dialogFormVisible: false,
+      page: 1,
+      rules: {
+        phone_number: [
+          { required: true, trigger: "blur", validator: validPhone }
+        ]
       }
     };
   },
-  components: {
-  BMapComponent,
-  Bmaplongitude,
-  },
   mounted() {
-    this.select_building();
+    this.findAll();
   },
   methods: {
-      //建筑物类型
-     select_building(){
-        let _this=this;
-        _this.$httpRequest({
-              path: "/room/select_building_type/",
-              type: "post",
-              success: resp => {
-                this.options=resp.data
-              },
-              fail: error => {
-                console.log(error.content);
-              }
-            });     
-      },
-    onSubmit() {
-      let _this=this;
-        _this.$httpRequest({
-              path: "/room/add_building/",
-              type: "post",
-              args:this.form,
-              success: resp => {
-                this.$message({
-                  type: 'success',
-                  message:resp.data,
-                });
-                this.form={
-                   name: "",
-                    type: "",
-                    address:"",
-                    avatar:'',
-                    center_coordinate:"",
-                    outline_coordinate:"",
-                }
-              },
-              fail: error => {
-                console.log(error.content);
-              }
-            }); 
-    },
-    cancelMap(){
-    this.showMapComponent=false;
-    },
-    confirmMap(){
-      this.showMapComponent=false;
-      
-    },
-     //添加图片
-     fileChange(e) { 
-            var that = this;
-            var file = e.target.files[0];
-            var reader = new FileReader();
-            reader.onload = function(e){
-                that.form.avatar  = e.target.result;
-            }
-            reader.readAsDataURL(file);
+    //获取手表列表
+    findAll() {
+      let _this = this;
+      _this.$httpRequest({
+        path: "/watch/findAll/",
+        type: "get",
+        args: {
+          page: this.page
         },
-    fourlongitudebutton(){
-      var userloc=JSON.parse(this.$cookie.get('list'))
-      var lise=""
-      for ( var i = 0; i <userloc.length; i++){
-           this.form.outline_coordinate+=userloc[i].lng+' '+userloc[i].lat+',';
+        success: resp => {
+          if (resp.data.msg== "手表信息查询成功") {
+           this.tableData=resp.data.date.watch;
+           this.total=parseInt(resp.data.totol);
+          } else {
+          }
         }
-        this.dialogVisible=false;
+      });
     },
-    bmapbutton(){
-          this.form.address=this.$cookie.get('address');
-          var userlocation=JSON.parse(this.$cookie.get('userlocation')||'{}');
-          this.form.center_coordinate=(userlocation.lng+','+userlocation.lat);
-          console.log(this.form.userlocation)
-            this.outerVisible=false;
-            console.log("12");
-            console.log(this.$cookie.get('address'))
-            console.log(JSON.parse(this.$cookie.get('userlocation')||'{}'))
-         },
-    handlePreview() {},
-    handleRemove() {},
-    goback() {
-      this.$router.go(-1);
+    //手表提交
+    Watchsubmit() {
+      let _this = this;
+      _this.$httpRequest({
+        path: "/watch/addWatch/",
+        type: "post",
+        args: {
+          user_name: this.form.user_name,
+          user_card: this.form.user_card,
+          phone_number: this.form.phone_number
+        },
+        success: resp => {
+          if (resp.msg== "手表信息查询成功") {
+            this.findAll();
+            this.dialogFormVisible = false;
+            this.$message({
+              type: "success",
+              message: "信息添加成功"
+            });
+          } else {
+            this.$message({
+              type: "success",
+              message: resp.msg
+            });
+          }
+        },
+        fail: error => {
+          console.log(error.content);
+        }
+      });
     },
+    // 分页
+    handleSizeChange(val) {},
+    handleCurrentChange(val) {
+      this.page = val;
+      this.findAll();
+    },
+    newgrouping() {
+      this.dialogFormVisible = true;
+    }
   }
 };
 </script>
-
 <style scoped lang="scss">
-.fillmap {
+.lookmap {
   width: 100%;
   margin-top: 20px;
-  #allmap {
-    height: 325px !important;
-    overflow: hidden;
+  .lookmap_add {
+    width: 100%;
   }
-  .el-input {
-    width: 400px;
-    float: left;
+  .lookmap_list {
+    width: 100%;
+    margin-top: 20px;
   }
-  .el-button--primary {
-    margin-left: 10px;
+  .lookmap_paging {
+    width: 100%;
+    margin-top: 20px;
+    float: right;
   }
-   .adatar {
-        position: relative;
-        width:168px;
-        height:168px;
-        img {
-            object-fit: cover;
-            object-position: center;
-            width: 100%;
-            height: 100%;
-            border-radius: 1%;
-        }
-        input {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
-            border-radius:1%;
-            outline: none;
-            opacity: 0;
-            cursor: pointer;
-            &:focus {
-                box-shadow: none;
-            }
-        }
-   }
+  .map {
+    height: 300px;
+    width: 700px;
+    margin: 0 auto;
+  }
 }
 </style>
-

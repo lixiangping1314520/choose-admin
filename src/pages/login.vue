@@ -1,7 +1,7 @@
 <template>
   <div id="login">
     <div class="login_t">
-      <h1>室内导航后台系统</h1>
+      <h1>选号后台系统</h1>
     </div>
     <div class="login-form-box">
       <el-form ref="form" :model="form">
@@ -41,7 +41,7 @@ export default {
   methods:{
       login () {
         this.$router.push({
-          path:'/addtype'
+          path:'/Addwatch'
         })
       }
   }

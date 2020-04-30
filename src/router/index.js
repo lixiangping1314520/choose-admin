@@ -2,18 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import login from '../pages/login'
 import Home from '../pages/Home'
-import addwatch from '../pages/addwatch'
-import homepage from '../pages/homepage'
-import collectionChannel from '../pages/collectionChannel'
-import addtype from '../pages/addtype'
-import Addfloor from '../pages/Addfloor'
-import fillmap from '../pages/fillmap'
-import addgrouping from '../pages/addgrouping'
-import addequipment from '../pages/addequipment'
-import lookmap from '../pages/lookmap'
-import checkequipment from '../pages/checkequipment'
-import addinformation from '../pages/addinformation'
-import aMap from '../pages/a'
+import Addwatch from '../pages/Addwatch'
+import abnormal from '../pages/abnormal'
+import Regularlysend from '../pages/Regularlysend'
+import Servicecontract from '../pages/Servicecontract'
+import selectedcard from '../pages/selectedcard'
+import phonenumber from '../pages/phonenumber'
 
 
 Vue.use(Router)
@@ -29,65 +23,36 @@ export default new Router({
       path: '/Home',
       name: 'Home',
       component: Home,
-      children:[{
-        path:'/Home/homepage',
-        name:'homepage',
-        component:homepage
-      },
-      {
-        path:'/Home/Addwatch',
-        name:'Addwatch',
-        component:Addwatch,
-      },
+      children:[
         {
-          path:'/Home/collectionChannel',
-          name:'collectionChannel',
-          component:collectionChannel
+          path:'/Addwatch',
+          name:'Addwatch',
+          component:Addwatch
         },
         {
-          path: '/addtype',
-          name: 'addtype',
-          component: addtype
+         path:'/Servicecontract',
+         name:'Servicecontract',
+         component:Servicecontract
         },
         {
-          path: '/Addfloor',
-          name: 'Addfloor',
-          component: Addfloor
+          path: '/abnormal',
+          name: 'abnormal',
+          component: abnormal
         },
         {
-          path: '/fillmap',
-          name: 'fillmap',
-          component: fillmap
+          path: '/Regularlysend',
+          name: 'Regularlysend',
+          component:Regularlysend
         },
         {
-          path: '/addgrouping',
-          name: 'addgrouping',
-          component: addgrouping
+          path: '/selectedcard',
+          name: 'selectedcard',
+          component:selectedcard
         },
         {
-          path: '/addequipment',
-          name: 'addequipment',
-          component: addequipment
-        },
-        {
-          path: '/lookmap',
-          name: 'lookmap',
-          component:lookmap
-        },
-        {
-          path: '/checkequipment',
-          name: 'checkequipment',
-          component:checkequipment
-        },
-        {
-          path: '/aMap',
-          name: 'aMap',
-          component:aMap
-        },
-        {
-          path:'/addinformation',
-          name:'addinformation',
-          component:addinformation,
+          path: '/phonenumber',
+          name: 'phonenumber',
+          component:phonenumber
         }
       ]
     },

@@ -29,20 +29,21 @@ export default{
            return Promise.reject(error)
            });
 			// axios.defaults.headers.common['Authorization'] = this.$cookie.get('token') || '';
-			axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
+			// axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8';
 			axios.defaults.headers.get['content-Type'] = 'application/x-www-form-urlencoded';
 			let defaults = {};
 			let args = _.extend(defaults, options.args || {});
 			if (options.type == 'post'){
 				axios({
-					// baseURL: 'http://172.16.201.236:8080',
-					baseURL: 'https://www.lixiangping.cn:44/',
+					// baseURL: 'http://www.qizhaokeji.cn:10001/',
+					// baseURL: 'http://192.168.31.117:8080/',
+				    baseURL: 'http://www.lixiangping.cn:10001/',
 					method: options.type,
 					url: options.path,
 					data: args
 				}).then((resp) => {
 					console.log(resp.status);
-					if (resp.status == '200'){
+					if (resp.data.code == '200'){
 						options.success(resp.data);
 						// if (resp.data.code == '200'){
 						// 	options.success(resp.data.data);
@@ -61,13 +62,14 @@ export default{
 			}
 			else if(options.type == 'get'){				 
 				axios({
-					// baseURL: 'http://172.16.201.14:8080/',
-					baseURL: 'https://www.lixiangping.cn/',
+					//  baseURL: 'http://www.qizhaokeji.cn:10001/',
+					baseURL: 'http://www.lixiangping.cn:10001/',
 					method: options.type,
 					url: options.path,
 					params: args,
 				}).then((resp) => {
-					if (resp.status == '1'){
+					if (resp.data.code == '200'){
+						options.success(resp);
 						// if (resp.data.code == '200'){
 						// 	options.success(resp.data.data);
 						// }
